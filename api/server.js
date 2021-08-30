@@ -19,11 +19,10 @@ server.post('/api/users', (req,res) => {
     const newUser = req.body
     User.insert(newUser)
     .then(user => {
-        if(user) {
-            res.status(201).json(user)
-        } else {
-            res.status(400).json({ message: 'Please provide name and bio for the user' })
+        if(!user.name || !user.bio){
+            res.status(400).json({message: 'Please provide name and bio for the user' })
         }
+        else { res.status(201).json(user)}
     })
     .catch((err) => {
         console.log(err)
@@ -49,7 +48,7 @@ server.get('/api/users/:id', (req,res) => {
     User.findById(req.params.id)
     .then(dog => {
         if(dog) {
-            res.status(200).json(dog)
+            res.status(201).json(dog)
         } else {
             res.status(404).json({ message: 'The user with the specified ID does not exist' })
         }})
@@ -63,7 +62,9 @@ server.get('/api/users/:id', (req,res) => {
 server.delete('/api/users/:id', (req,res) => {
     //res.status(200).json({ message: 'Delete this user' })
     User.remove(req.params.id)
-    .then()
+    .then(user => {
+
+    })
     .catch(err => {
         console.log(err)
         res.status(500).json({ message: 'The user could not be removed' })
@@ -72,7 +73,7 @@ server.delete('/api/users/:id', (req,res) => {
 
 // PUT - Updates the user with the specified id using data from the request body
 server.put('/api/users/:id', (req,res) => {
-    res.status(200).json({ message: 'Updates the user' })
+    //res.status(200).json({ message: 'Updates the user' })
 })
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}
