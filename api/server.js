@@ -59,16 +59,21 @@ server.get('/api/users/:id', (req,res) => {
 })
 
 // DELETE - Removes the user with the specified id and returns the deleted user
-server.delete('/api/users/:id', (req,res) => {
+server.delete('/api/users/:id', async (req,res) => {
     //res.status(200).json({ message: 'Delete this user' })
-    User.remove(req.params.id)
-    .then(user => {
+    const remUser = await User.findById(req.params.id)
+        if (!remUser) {
+            res.status(404).json({message:'The user with the specified ID does not exist'})
+        } else { 
+            const deletedUser = await User.remove(remUser.id)
+            res.status(200).json(deletedUser)}
 
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).json({ message: 'The user could not be removed' })
-    })
+        
+
+    // .catch(err => {
+    //     console.log(err)
+    //     res.status(500).json({ message: 'The user could not be removed' })
+    // })
 })
 
 // PUT - Updates the user with the specified id using data from the request body
